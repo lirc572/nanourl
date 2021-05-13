@@ -20,7 +20,7 @@ func InitRouters() *gin.Engine {
 			"message": "v0.1",
 		})
 	})
-	r.Static("/static", "./static")
+	r.Static("/app", "./frontend/build")
 	r.GET("/projects", func(c *gin.Context) {
 		jsonData := []byte(todoist.GetProjects())
 		c.Data(http.StatusOK, gin.MIMEJSON, jsonData)
