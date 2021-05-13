@@ -4,7 +4,7 @@ import axios from "axios";
 
 async function registerAccount(username, password) {
   try {
-    const res = await axios.post("http://localhost:5000/api/v1/register", {
+    const res = await axios.post("http://localhost:5000/register", {
       username,
       password,
     });
