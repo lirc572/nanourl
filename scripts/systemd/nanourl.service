@@ -6,6 +6,7 @@ After=nginx.service
 Type=simple
 Environment=TODOIST_API_TOKEN=<your_todoist_api_token>
 Environment=DATABASE_URL=<your_postgresql_connection_string>
+Environment=APP_PATH=<your_static_site_path>
 ExecStart=sudo -E -H -u <your_user_name> <your_go_path>/bin/nanourl
 Restart=always
 

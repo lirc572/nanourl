@@ -7,6 +7,7 @@ import (
 	"github.com/lirc572/nanourl/middleware/jwt"
 	"github.com/lirc572/nanourl/routers/api"
 	v1 "github.com/lirc572/nanourl/routers/api/v1"
+	"github.com/lirc572/nanourl/settings"
 	"github.com/lirc572/nanourl/todoist"
 )
 
@@ -18,7 +19,7 @@ func InitRouters() *gin.Engine {
 	r.GET("/", func(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/app")
 	})
-	r.Static("/app", "./frontend/build")
+	r.Static("/app", settings.AppPath)
 	r.GET("/projects", func(c *gin.Context) {
 		jsonData := []byte(todoist.GetProjects())
 		c.Data(http.StatusOK, gin.MIMEJSON, jsonData)
