@@ -7,3 +7,5 @@ runtime/*
 
 /bin
 .env
+
+/frontend/node_modules
