@@ -4,7 +4,7 @@ import axios from "axios";
 
 async function loginToAccount(username, password) {
   try {
-    const res = await axios.post("http://localhost:5000/api/v1/login", {
+    const res = await axios.post("http://localhost:5000/login", {
       username,
       password,
     });
