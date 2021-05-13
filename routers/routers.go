@@ -16,9 +16,7 @@ func InitRouters() *gin.Engine {
 	r.Use(gin.Recovery())
 
 	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "v0.1",
-		})
+		c.Redirect(http.StatusMovedPermanently, "/app")
 	})
 	r.Static("/app", "./frontend/build")
 	r.GET("/projects", func(c *gin.Context) {
