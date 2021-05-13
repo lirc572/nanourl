@@ -11,6 +11,7 @@ go get -u github.com/lirc572/nanourl
 ```bash
 export TODOIST_API_TOKEN=<your_todoist_api_token>
 export DATABASE_URL=<your_postgresql_connection_string>
+export APP_PATH=<your_static_site_path>
 
 GOPATH=${GOPATH:="$HOME/go"} && $GOPATH/bin/nanourl
 ```

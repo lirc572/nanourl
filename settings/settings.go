@@ -16,6 +16,7 @@ var JwtSecret []byte
 var TodoistApiToken string
 var JwtExpireTime time.Duration
 var JwtRefreshTime time.Duration
+var AppPath string
 
 func Setup() {
 	var err error
@@ -80,4 +81,6 @@ func Setup() {
 		log.Fatalf("settings.Setup error when parsing JWT_REFRESH_TIME: %v", err)
 	}
 	JwtRefreshTime = time.Duration(jwtRefreshTimeInt) * time.Second
+
+	AppPath = os.Getenv("APP_PATH")
 }
