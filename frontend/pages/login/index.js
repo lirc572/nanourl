@@ -1,24 +1,7 @@
 import { Form, Input, Button, Checkbox } from "antd";
 import { useRouter } from "next/router";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-
-async function loginToAccount(username, password) {
-  try {
-    const res = await axios.post("http://localhost:5000/login", {
-      username,
-      password,
-    });
-    return res;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        return error.response;
-      }
-    } else {
-      console.log(error);
-    }
-  }
-}
 
 const layout = {
   labelCol: {
@@ -38,18 +21,68 @@ const tailLayout = {
 export default function LoginPage() {
   const router = useRouter();
 
+  const dispatch = useDispatch();
+  const { username, password, remember, baseUrl } = useSelector((state) => {
+    return {
+      username: state.username,
+      password: state.password,
+      remember: state.remember,
+      baseUrl: state.baseUrl,
+    };
+  });
+
+  async function loginToAccount(username, password) {
+    try {
+      const res = await axios.post(`${baseUrl}/login`, {
+        username,
+        password,
+        remember,
+      });
+      return res;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          return error.response;
+        }
+      } else {
+        console.log(error);
+      }
+    }
+  }
+
   const onRegisterButtonClick = () => {
     router.push("/register");
   };
 
   const onFinish = (values) => {
-    loginToAccount(values.username, values.password).then((res) => {
+    const { username, password, remember } = values;
+    dispatch({
+      type: "SET_REMEMBER_CREDENTIALS",
+      payload: {
+        remember,
+      },
+    });
+    loginToAccount(username, password).then((res) => {
       if (!res) {
         console.log("Stupid error");
         return;
       }
       if (res.status == 200) {
-        router.push("/");
+        const { token } = res.data;
+        dispatch({
+          type: "SET_CREDENTIALS",
+          payload: {
+            username,
+            password,
+          },
+        });
+        dispatch({
+          type: "SET_ACCESS_TOKEN",
+          payload: {
+            accessToken: token,
+          },
+        });
+        router.push("/account");
       } else {
         console.log(res);
       }
@@ -63,7 +96,9 @@ export default function LoginPage() {
       {...layout}
       name="basic"
       initialValues={{
-        remember: true,
+        username,
+        password,
+        remember,
       }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}

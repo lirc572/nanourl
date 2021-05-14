@@ -10,39 +10,66 @@ import {
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
-const menu = (
-  <Menu>
-    <Menu.Item icon={<UserAddOutlined />} key="0">
-      <Link href="/register">
-        <a>Register</a>
-      </Link>
-    </Menu.Item>
-    <Menu.Item icon={<LoginOutlined />} key="1">
-      <Link href="/login">
-        <a>Login</a>
-      </Link>
-    </Menu.Item>
-    <Menu.Item icon={<UserOutlined />} danger key="2">
-      <Link href="/account">
-        <a>Account</a>
-      </Link>
-    </Menu.Item>
-    <Menu.Divider key="3" />
-    <Menu.Item icon={<GithubOutlined />} disabled key="4">
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://github.com/lirc572/nanourl"
-      >
-        GitHub
-      </a>
-    </Menu.Item>
-  </Menu>
-);
+import { useSelector, useDispatch } from "react-redux";
 
 export default function Layout({ children }) {
   const router = useRouter();
+
+  const dispatch = useDispatch();
+  const { accessToken } = useSelector((state) => {
+    return {
+      accessToken: state.accessToken,
+    };
+  });
+
+  const onLogOutClick = () => {
+    dispatch({
+      type: "LOG_OUT",
+    });
+    router.push("/login");
+  };
+
+  let menu = (
+    <Menu>
+      {!accessToken && (
+        <Menu.Item icon={<UserAddOutlined />} key="0">
+          <Link href="/register">
+            <a>Register</a>
+          </Link>
+        </Menu.Item>
+      )}
+      {!accessToken && (
+        <Menu.Item icon={<LoginOutlined />} key="1">
+          <Link href="/login">
+            <a>Login</a>
+          </Link>
+        </Menu.Item>
+      )}
+      {accessToken && (
+        <Menu.Item icon={<UserOutlined />} key="2">
+          <Link href="/account">
+            <a>Account</a>
+          </Link>
+        </Menu.Item>
+      )}
+      {accessToken && (
+        <Menu.Item icon={<UserOutlined />} key="3">
+          <a onClick={onLogOutClick}>Log Out</a>
+        </Menu.Item>
+      )}
+      <Menu.Divider key="4" />
+      <Menu.Item icon={<GithubOutlined />} disabled key="5">
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://github.com/lirc572/nanourl"
+        >
+          GitHub
+        </a>
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <>
       <Head>
@@ -69,9 +96,7 @@ export default function Layout({ children }) {
           </Dropdown>,
         ]}
       />
-      <div className={styles.container}>
-      {children}
-      </div>
+      <div className={styles.container}>{children}</div>
       <footer className={styles.footer}>Copyright © 2021 NanoURL</footer>
     </>
   );

@@ -11,8 +11,11 @@
     "antd": "^4.15.5",
     "axios": "^0.21.1",
     "next": "10.2.0",
+    "next-redux-wrapper": "^6.0.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-redux": "^7.2.4",
+    "redux-devtools-extension": "^2.13.9",
     "swr": "^0.5.6"
   }
 }

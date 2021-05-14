@@ -1,24 +1,7 @@
 import { Form, Input, Button, Checkbox } from "antd";
 import { useRouter } from "next/router";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-
-async function registerAccount(username, password) {
-  try {
-    const res = await axios.post("http://localhost:5000/register", {
-      username,
-      password,
-    });
-    return res;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        return error.response;
-      }
-    } else {
-      console.log(error);
-    }
-  }
-}
 
 const layout = {
   labelCol: {
@@ -38,17 +21,50 @@ const tailLayout = {
 export default function RegisterPage() {
   const router = useRouter();
 
+  const dispatch = useDispatch();
+  const { baseUrl } = useSelector((state) => {
+    return {
+      baseUrl: state.baseUrl,
+    };
+  });
+
+  async function registerAccount(username, password) {
+    try {
+      const res = await axios.post(`${baseUrl}/register`, {
+        username,
+        password,
+      });
+      return res;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          return error.response;
+        }
+      } else {
+        console.log(error);
+      }
+    }
+  }
+
   const onLoginButtonClick = () => {
     router.push("/login");
   };
 
   const onFinish = (values) => {
-    registerAccount(values.username, values.password).then((res) => {
+    const { username, password } = values;
+    registerAccount(username, password).then((res) => {
       if (!res) {
         console.log("Stupid error");
         return;
       }
       if (res.status == 204) {
+        dispatch({
+          type: "SET_CREDENTIALS",
+          payload: {
+            username,
+            password,
+          },
+        });
         router.push("/login");
       } else {
         console.log(res);
