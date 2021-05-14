@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import styles from "../styles/Layout.module.css";
-import { PageHeader, Button, Menu, Dropdown, message } from "antd";
+import { PageHeader, Button, Menu, Dropdown, Popconfirm, message } from "antd";
 import {
   GithubOutlined,
   UserOutlined,
   LoginOutlined,
+  LogoutOutlined,
   UserAddOutlined,
   FireOutlined,
 } from "@ant-design/icons";
@@ -22,12 +24,31 @@ export default function Layout({ children }) {
     };
   });
 
+  const [logOutConfirming, setLogOutConfirming] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
   const onLogOutClick = () => {
+    setLogOutConfirming(true);
+  };
+
+  const onLogOutSuccessful = () => {
+    setLogOutConfirming(false);
+    setDropdownVisible(false);
     dispatch({
       type: "LOG_OUT",
     });
-    message.success('Logged out successfully!', 5);
+    message.success("Logged out successfully!", 5);
     router.push("/login");
+  };
+
+  const onLogOutCancelled = () => {
+    setLogOutConfirming(false);
+    setDropdownVisible(false);
+  }
+
+  const handleDropdownVisibleChange = (flag) => {
+    console.log(`handleDropdownVisibleChange(${flag})`);
+    setDropdownVisible(flag || logOutConfirming);
   };
 
   let menu = (
@@ -54,8 +75,17 @@ export default function Layout({ children }) {
         </Menu.Item>
       )}
       {accessToken && (
-        <Menu.Item icon={<UserOutlined />} key="3">
-          <a onClick={onLogOutClick}>Log Out</a>
+        <Menu.Item icon={<LogoutOutlined />} key="3">
+          <Popconfirm
+            placement="bottomRight"
+            title="Are you sure you want to log out?"
+            onConfirm={onLogOutSuccessful}
+            onCancel={onLogOutCancelled}
+            okText="Yes"
+            cancelText="No"
+          >
+            <a onClick={onLogOutClick}>Log Out</a>
+          </Popconfirm>
         </Menu.Item>
       )}
       <Menu.Divider key="4" />
@@ -90,7 +120,14 @@ export default function Layout({ children }) {
         title="NanoURL"
         subTitle="A fantastic URL shortener"
         extra={[
-          <Dropdown overlay={menu} placement="bottomLeft" arrow key="0">
+          <Dropdown
+            overlay={menu}
+            placement="bottomLeft"
+            onVisibleChange={handleDropdownVisibleChange}
+            visible={dropdownVisible}
+            arrow
+            key="0"
+          >
             <Button>
               <FireOutlined />
             </Button>
