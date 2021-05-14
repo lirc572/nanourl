@@ -7,6 +7,7 @@ import {
   LoginOutlined,
   LogoutOutlined,
   UserAddOutlined,
+  DashboardOutlined,
   FireOutlined,
 } from "@ant-design/icons";
 import Head from "next/head";
@@ -47,7 +48,6 @@ export default function Layout({ children }) {
   }
 
   const handleDropdownVisibleChange = (flag) => {
-    console.log(`handleDropdownVisibleChange(${flag})`);
     setDropdownVisible(flag || logOutConfirming);
   };
 
@@ -68,14 +68,21 @@ export default function Layout({ children }) {
         </Menu.Item>
       )}
       {accessToken && (
-        <Menu.Item icon={<UserOutlined />} key="2">
+        <Menu.Item icon={<DashboardOutlined />} key="2">
+          <Link href="/dashboard">
+            <a>Dashboard</a>
+          </Link>
+        </Menu.Item>
+      )}
+      {accessToken && (
+        <Menu.Item icon={<UserOutlined />} key="3">
           <Link href="/account">
             <a>Account</a>
           </Link>
         </Menu.Item>
       )}
       {accessToken && (
-        <Menu.Item icon={<LogoutOutlined />} key="3">
+        <Menu.Item icon={<LogoutOutlined />} key="4">
           <Popconfirm
             placement="bottomRight"
             title="Are you sure you want to log out?"
@@ -88,8 +95,8 @@ export default function Layout({ children }) {
           </Popconfirm>
         </Menu.Item>
       )}
-      <Menu.Divider key="4" />
-      <Menu.Item icon={<GithubOutlined />} disabled key="5">
+      <Menu.Divider key="5" />
+      <Menu.Item icon={<GithubOutlined />} disabled key="6">
         <a
           target="_blank"
           rel="noopener noreferrer"
