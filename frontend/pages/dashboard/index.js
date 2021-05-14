@@ -1,27 +1,21 @@
 import { useEffect, useState } from "react";
-import { Row, Col, Divider, Button, List, Space } from "antd";
+import { Row, Col, Divider, Button, List, Space, Tooltip, message } from "antd";
+import { CopyOutlined } from "@ant-design/icons";
 import styles from "../../styles/Dashboard.module.css";
 import { useSelector } from "react-redux";
 import { readShortUrls } from "../../util/api";
 
-const data = [
-  {
-    alias: "tmp",
-    url: "https://abc.com",
-  },
-  {
-    alias: "bbc",
-    url: "https://stupid.io",
-  },
-  {
-    alias: "google",
-    url: "https://google.com",
-  },
-  {
-    alias: "git",
-    url: "https://github.com",
-  },
-];
+function copyToClipboard(textToCopy) {
+  navigator.clipboard.writeText(textToCopy).then(
+    function () {
+      console.log("Copied to clipboard successfully!");
+      message.info("Link copied to clipboard!");
+    },
+    function (err) {
+      console.error("Could not copy text: ", err);
+    }
+  );
+}
 
 export default function DashboardPage() {
   const baseUrl = useSelector((state) => {
@@ -55,13 +49,26 @@ export default function DashboardPage() {
               dataSource={shortUrls}
               renderItem={(item) => (
                 <List.Item>
-                  <Row className={styles.entryrow}>
-                    <Col span={4}>
-                      <a href={`${baseUrl}/go/${item.alias}`} target="_blank">
-                        {item.alias}
-                      </a>
+                  <Row align="middle" className={styles.entryrow}>
+                    <Col span={2}>
+                      <Tooltip title="copy url">
+                        <Button
+                          shape="circle"
+                          icon={<CopyOutlined />}
+                          onClick={() =>
+                            copyToClipboard(`${baseUrl}/go/${item.alias}`)
+                          }
+                        />
+                      </Tooltip>
                     </Col>
-                    <Col span={16}>{item.url}</Col>
+                    <Col span={4}>
+                      <Tooltip title="go to url">
+                        <a href={`${baseUrl}/go/${item.alias}`} target="_blank">
+                          {item.alias}
+                        </a>
+                      </Tooltip>
+                    </Col>
+                    <Col span={14}>{item.url}</Col>
                     <Col span={4}>
                       <Space size="middle">
                         <Button shape="round" type="primary">
