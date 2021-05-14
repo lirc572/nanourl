@@ -1,7 +1,7 @@
 import { Form, Input, Button, Checkbox } from "antd";
 import { useRouter } from "next/router";
 import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
+import { loginToAccount } from "../../util/api";
 
 const layout = {
   labelCol: {
@@ -22,33 +22,13 @@ export default function LoginPage() {
   const router = useRouter();
 
   const dispatch = useDispatch();
-  const { username, password, remember, baseUrl } = useSelector((state) => {
+  const { username, password, remember } = useSelector((state) => {
     return {
       username: state.username,
       password: state.password,
       remember: state.remember,
-      baseUrl: state.baseUrl,
     };
   });
-
-  async function loginToAccount(username, password) {
-    try {
-      const res = await axios.post(`${baseUrl}/login`, {
-        username,
-        password,
-        remember,
-      });
-      return res;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          return error.response;
-        }
-      } else {
-        console.log(error);
-      }
-    }
-  }
 
   const onRegisterButtonClick = () => {
     router.push("/register");
