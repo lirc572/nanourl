@@ -15,7 +15,7 @@ import {
 import { CopyOutlined } from "@ant-design/icons";
 import styles from "../../styles/Dashboard.module.css";
 import { useSelector } from "react-redux";
-import { readShortUrls, createShortUrl } from "../../util/api";
+import { readShortUrls, createShortUrl, deleteShortUrl } from "../../util/api";
 
 function copyToClipboard(textToCopy) {
   navigator.clipboard.writeText(textToCopy).then(
@@ -64,12 +64,28 @@ export default function DashboardPage() {
     });
   };
 
+  const getOnDelete = (alias) => {
+    return () => {
+      deleteShortUrl(alias).then((successful) => {
+        if (successful === true) {
+          setShortUrls(
+            shortUrls.filter((item) => {
+              return item.alias !== alias;
+            })
+          );
+        } else {
+          message.error("Failed to delete alias. Please try again later!", 5);
+        }
+      });
+    };
+  };
+
   useEffect(async () => {
     const data = await readShortUrls();
     if (data) {
       setShortUrls(data);
     }
-  });
+  }, []);
   return (
     <div className={styles.main}>
       <Row justify="center">
@@ -111,7 +127,12 @@ export default function DashboardPage() {
                         <Button shape="round" type="primary">
                           Edit
                         </Button>
-                        <Button shape="round" type="primary" danger>
+                        <Button
+                          shape="round"
+                          type="primary"
+                          danger
+                          onClick={getOnDelete(item.alias)}
+                        >
                           Delete
                         </Button>
                       </Space>
