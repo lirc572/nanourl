@@ -1,9 +1,21 @@
 import { useEffect, useState } from "react";
-import { Row, Col, Divider, Button, List, Space, Tooltip, message } from "antd";
+import {
+  Row,
+  Col,
+  Divider,
+  Button,
+  List,
+  Space,
+  Tooltip,
+  Modal,
+  Form,
+  Input,
+  message,
+} from "antd";
 import { CopyOutlined } from "@ant-design/icons";
 import styles from "../../styles/Dashboard.module.css";
 import { useSelector } from "react-redux";
-import { readShortUrls } from "../../util/api";
+import { readShortUrls, createShortUrl } from "../../util/api";
 
 function copyToClipboard(textToCopy) {
   navigator.clipboard.writeText(textToCopy).then(
@@ -27,6 +39,31 @@ export default function DashboardPage() {
   });
 
   const [shortUrls, setShortUrls] = useState([]);
+
+  const [createModalVisiblility, setCreateModalVisibility] = useState(false);
+  const showCreateModal = () => setCreateModalVisibility(true);
+  const hideCreateModal = () => setCreateModalVisibility(false);
+
+  const [form] = Form.useForm();
+  const onCreate = () => {
+    const { alias, url } = form.getFieldsValue();
+    createShortUrl(alias, url).then((successful) => {
+      if (successful === true) {
+        hideCreateModal();
+        readShortUrls().then((data) => {
+          if (data) {
+            setShortUrls(data);
+          }
+        });
+      } else {
+        message.error(
+          "Failed to create alias. Please try a different alias!",
+          5
+        );
+      }
+    });
+  };
+
   useEffect(async () => {
     const data = await readShortUrls();
     if (data) {
@@ -39,7 +76,7 @@ export default function DashboardPage() {
         <Col span={20} className={styles.column}>
           <div className={styles.headerdivider}>
             <span className={styles.heading}>Aliases</span>
-            <Button type="primary" ghost>
+            <Button type="primary" ghost onClick={showCreateModal}>
               Add New
             </Button>
           </div>
@@ -87,6 +124,45 @@ export default function DashboardPage() {
         </Col>
       </Row>
       <div className={styles.fullgrow} />
+      <Modal
+        visible={createModalVisiblility}
+        title="Create New Alias"
+        onOk={hideCreateModal}
+        onCancel={hideCreateModal}
+        footer={[
+          <Button key="back" onClick={hideCreateModal}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary" onClick={onCreate}>
+            Create
+          </Button>,
+        ]}
+      >
+        <Form form={form} name="create_alias" layout="inline">
+          <Form.Item
+            name="alias"
+            rules={[
+              {
+                required: true,
+                message: "Please provide an alias!",
+              },
+            ]}
+          >
+            <Input placeholder="Alias" />
+          </Form.Item>
+          <Form.Item
+            name="url"
+            rules={[
+              {
+                required: true,
+                message: "Please provide a URL!",
+              },
+            ]}
+          >
+            <Input placeholder="URL" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }
