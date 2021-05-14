@@ -20,6 +20,17 @@ func InitRouters() *gin.Engine {
 
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
+	config.AllowHeaders = []string{
+		"Content-Type",
+		"Content-Length",
+		"Accept-Encoding",
+		"X-CSRF-Token",
+		"Authorization",
+		"accept",
+		"origin",
+		"Cache-Control",
+		"X-Requested-With",
+	}
 	r.Use(cors.New(config))
 
 	r.GET("/", func(c *gin.Context) {
