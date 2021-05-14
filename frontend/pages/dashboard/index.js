@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Row, Col, Divider, Button, List, Space } from "antd";
 import styles from "../../styles/Dashboard.module.css";
+import { useSelector } from "react-redux";
 import { readShortUrls } from "../../util/api";
-import { useRouter } from "next/router";
 
 const data = [
   {
@@ -24,6 +24,14 @@ const data = [
 ];
 
 export default function DashboardPage() {
+  const baseUrl = useSelector((state) => {
+    let res = state.baseUrl;
+    while (res.slice(-1) === "/") {
+      res = res.substring(0, res.length - 1);
+    }
+    return res;
+  });
+
   const [shortUrls, setShortUrls] = useState([]);
   useEffect(async () => {
     const data = await readShortUrls();
@@ -48,7 +56,11 @@ export default function DashboardPage() {
               renderItem={(item) => (
                 <List.Item>
                   <Row className={styles.entryrow}>
-                    <Col span={4}>{item.alias}</Col>
+                    <Col span={4}>
+                      <a href={`${baseUrl}/go/${item.alias}`} target="_blank">
+                        {item.alias}
+                      </a>
+                    </Col>
                     <Col span={16}>{item.url}</Col>
                     <Col span={4}>
                       <Space size="middle">
