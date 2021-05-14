@@ -172,10 +172,7 @@ export async function readShortUrl(alias) {
   try {
     const res = await _instance({
       method: "get",
-      url: "/api/v1/shorturls",
-      params: {
-        alias,
-      },
+      url: `/api/v1/shorturls/${alias}`,
     });
     return res.data;
   } catch (error) {
@@ -188,10 +185,7 @@ export async function updateShortUrl(alias, url) {
   try {
     const res = await _instance({
       method: "put",
-      url: "/api/v1/shorturls",
-      params: {
-        alias,
-      },
+      url: `/api/v1/shorturls/${alias}`,
       data: {
         url,
       },
@@ -208,10 +202,7 @@ export async function deleteShortUrl(alias) {
   try {
     const res = await _instance({
       method: "delete",
-      url: "/api/v1/shorturls",
-      params: {
-        alias,
-      },
+      url: `/api/v1/shorturls/${alias}`,
     });
     return true;
   } catch (error) {
