@@ -1,5 +1,5 @@
 import styles from "../styles/Layout.module.css";
-import { PageHeader, Button, Menu, Dropdown } from "antd";
+import { PageHeader, Button, Menu, Dropdown, message } from "antd";
 import {
   GithubOutlined,
   UserOutlined,
@@ -26,6 +26,7 @@ export default function Layout({ children }) {
     dispatch({
       type: "LOG_OUT",
     });
+    message.success('Logged out successfully!', 5);
     router.push("/login");
   };
 

@@ -1,4 +1,4 @@
-import { Form, Input, Button, Checkbox } from "antd";
+import { Form, Input, Button, Checkbox, message } from "antd";
 import { useRouter } from "next/router";
 import { useSelector, useDispatch } from "react-redux";
 import { loginToAccount } from "../../util/api";
@@ -62,6 +62,7 @@ export default function LoginPage() {
             accessToken: token,
           },
         });
+        message.success('Logged in successfully!', 5);
         router.push("/account");
       } else {
         console.log(res);
