@@ -47,6 +47,7 @@ function getAxiosInstance() {
     function (error) {
       if (error.response.status === 401) {
         message.error("Authentication failed. Please login again!", 5);
+        initializeStore().dispatch({ type: "LOG_OUT" });
       }
       return Promise.reject(error);
     }

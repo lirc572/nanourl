@@ -63,7 +63,7 @@ export default function LoginPage() {
           },
         });
         message.success('Logged in successfully!', 5);
-        router.push("/account");
+        router.push("/dashboard");
       } else {
         console.log(res);
       }
