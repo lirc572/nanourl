@@ -15,7 +15,12 @@ import {
 import { CopyOutlined } from "@ant-design/icons";
 import styles from "../../styles/Dashboard.module.css";
 import { useSelector } from "react-redux";
-import { readShortUrls, createShortUrl, deleteShortUrl } from "../../util/api";
+import {
+  readShortUrls,
+  createShortUrl,
+  updateShortUrl,
+  deleteShortUrl,
+} from "../../util/api";
 
 function copyToClipboard(textToCopy) {
   navigator.clipboard.writeText(textToCopy).then(
@@ -57,11 +62,58 @@ export default function DashboardPage() {
         });
       } else {
         message.error(
-          "Failed to create alias. Please try a different alias!",
+          "Failed to create alias. Please try a different combination!",
           5
         );
       }
     });
+  };
+
+  const onModelInputKeyPress = (target) => {
+    if (target.charCode === 13) {
+      const { alias, url } = form.getFieldsValue();
+      if (alias.length > 2 && url.length > 4) {
+        onCreate();
+      }
+    }
+  };
+
+  const [editModalVisiblility, setEditModalVisiblility] = useState(false);
+  const getShowEditModal = (alias, url) => {
+    return () => {
+      editForm.setFieldsValue({
+        alias,
+        url,
+      });
+      setEditModalVisiblility(true);
+    };
+  };
+  const hideEditModal = () => setEditModalVisiblility(false);
+
+  const [editForm] = Form.useForm();
+  const onEdit = () => {
+    const { alias, url } = editForm.getFieldsValue();
+    updateShortUrl(alias, url).then((successful) => {
+      if (successful === true) {
+        hideEditModal();
+        readShortUrls().then((data) => {
+          if (data) {
+            setShortUrls(data);
+          }
+        });
+      } else {
+        message.error("Failed to edit alias. Please try a different url!", 5);
+      }
+    });
+  };
+
+  const onEditModelInputKeyPress = (target) => {
+    if (target.charCode === 13) {
+      const { alias, url } = editForm.getFieldsValue();
+      if (alias.length > 2 && url.length > 4) {
+        onEdit();
+      }
+    }
   };
 
   const getOnDelete = (alias) => {
@@ -80,21 +132,13 @@ export default function DashboardPage() {
     };
   };
 
-  const onModelInputKeyPress = (target) => {
-    if (target.charCode===13) {
-      const { alias, url } = form.getFieldsValue();
-      if (alias.length > 2 && url.length > 4) {
-        onCreate();
-      }
-    }
-  };
-
   useEffect(async () => {
     const data = await readShortUrls();
     if (data) {
       setShortUrls(data);
     }
   }, []);
+
   return (
     <div className={styles.main}>
       <Row justify="center">
@@ -133,7 +177,11 @@ export default function DashboardPage() {
                     <Col span={14}>{item.url}</Col>
                     <Col span={4}>
                       <Space size="middle">
-                        <Button shape="round" type="primary">
+                        <Button
+                          shape="round"
+                          type="primary"
+                          onClick={getShowEditModal(item.alias, item.url)}
+                        >
                           Edit
                         </Button>
                         <Button
@@ -176,7 +224,8 @@ export default function DashboardPage() {
                 required: true,
                 min: 3,
                 max: 20,
-                message: "Please provide an alias of a length between 3 and 20!",
+                message:
+                  "Please provide an alias of a length between 3 and 20!",
               },
             ]}
           >
@@ -187,12 +236,44 @@ export default function DashboardPage() {
             rules={[
               {
                 required: true,
-                min:5,
+                min: 5,
                 message: "Please provide a URL of a length of at least 5!",
               },
             ]}
           >
             <Input placeholder="URL" onKeyPress={onModelInputKeyPress} />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        visible={editModalVisiblility}
+        title="Create New Alias"
+        onOk={hideEditModal}
+        onCancel={hideEditModal}
+        footer={[
+          <Button key="back" onClick={hideEditModal}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary" onClick={onEdit}>
+            Create
+          </Button>,
+        ]}
+      >
+        <Form form={editForm} name="edit_alias" layout="inline">
+          <Form.Item name="alias">
+            <Input placeholder="Alias" disabled />
+          </Form.Item>
+          <Form.Item
+            name="url"
+            rules={[
+              {
+                required: true,
+                min: 5,
+                message: "Please provide a URL of a length of at least 5!",
+              },
+            ]}
+          >
+            <Input placeholder="URL" onKeyPress={onEditModelInputKeyPress} />
           </Form.Item>
         </Form>
       </Modal>
