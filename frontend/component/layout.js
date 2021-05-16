@@ -101,7 +101,7 @@ export default function Layout({ children }) {
         </Menu.Item>
       )}
       <Menu.Divider key="5" />
-      <Menu.Item icon={<GithubOutlined />} disabled key="6">
+      <Menu.Item icon={<GithubOutlined />} key="6">
         <a
           target="_blank"
           rel="noopener noreferrer"
