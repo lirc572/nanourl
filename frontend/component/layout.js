@@ -24,6 +24,11 @@ export default function Layout({ children }) {
       accessToken: state.accessToken,
     };
   });
+  const { username } = useSelector((state) => {
+    return {
+      username: state.username,
+    };
+  });
 
   const [logOutConfirming, setLogOutConfirming] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -137,6 +142,7 @@ export default function Layout({ children }) {
           >
             <Button>
               <FireOutlined />
+              {accessToken ? `Welcome, ${username}!` : ""}
             </Button>
           </Dropdown>,
         ]}
