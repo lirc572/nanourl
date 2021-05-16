@@ -11,12 +11,12 @@ import (
 )
 
 type createShortUrlReq struct {
-	Alias string `form:"alias" json:"alias" xml:"alias" binding:"required"`
-	Url   string `form:"url" json:"url" xml:"url" binding:"required"`
+	Alias string `form:"alias" json:"alias" xml:"alias" binding:"required,min=3,max=20"`
+	Url   string `form:"url" json:"url" xml:"url" binding:"required,url"`
 }
 
 type updateShortUrlReq struct {
-	Url string `form:"url" json:"url" xml:"url" binding:"required"`
+	Url string `form:"url" json:"url" xml:"url" binding:"required,url"`
 }
 
 func ReadShortUrls(c *gin.Context) {
