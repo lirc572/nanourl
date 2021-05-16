@@ -21,6 +21,8 @@ GOPATH=${GOPATH:="$HOME/go"} && $GOPATH/bin/nanourl
 Add the following configuration, modify it accordingly:
 
 ```
+limit_req_zone $binary_remote_addr zone=mylimit:10m rate=20r/s;
+
 server {
         listen 80;
         listen [::]:80;
@@ -28,6 +30,7 @@ server {
         server_name nanourl.ml;
 
         location / {
+                limit_req zone=mylimit burst=50 nodelay;
                 proxy_pass http://localhost:8848;
                 proxy_set_header Upgrade $http_upgrade;
                 proxy_set_header Connection upgrade;
@@ -35,6 +38,8 @@ server {
         }
 }
 ```
+
+For the lines on request rate limiting, refer to <https://nanourl.ml/nginx>.
 
 ## Run at Startup with Systemd
 
