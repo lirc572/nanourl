@@ -1,6 +1,7 @@
 import { initializeStore } from "../store";
 import { message } from "antd";
 import axios from "axios";
+import Router from 'next/router';
 
 let instance;
 
@@ -48,6 +49,7 @@ function getAxiosInstance() {
       if (error.response.status === 401) {
         message.error("Authentication failed. Please login again!", 5);
         initializeStore().dispatch({ type: "LOG_OUT" });
+        Router.push("/");
       }
       return Promise.reject(error);
     }
