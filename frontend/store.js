@@ -44,13 +44,13 @@ const reducer = (state = initialState, action) => {
       };
     case "SET_ACCESS_TOKEN":
       const { accessToken } = action.payload;
-      localStorage.setItem("nanourlAccessToekn", accessToken);
+      localStorage.setItem("nanourlAccessToken", accessToken);
       return {
         ...state,
         accessToken,
       };
     case "LOG_OUT":
-      localStorage.removeItem("nanourlAccessToekn");
+      localStorage.removeItem("nanourlAccessToken");
       return {
         ...state,
         accessToken: null,
