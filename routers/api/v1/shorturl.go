@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -8,6 +9,8 @@ import (
 	"github.com/lirc572/nanourl/httputil"
 	"github.com/lirc572/nanourl/middleware/jwt"
 	"github.com/lirc572/nanourl/models"
+	"github.com/lirc572/nanourl/util"
+	"gorm.io/gorm"
 )
 
 type createShortUrlReq struct {
@@ -57,6 +60,7 @@ func CreateShortUrl(c *gin.Context) {
 	}
 	err = models.CreateShortUrl(username, createShortUrl.Url, createShortUrl.Alias)
 	if err != nil {
+		// if (errors.Is(err, gorm.))
 		c.JSON(http.StatusInternalServerError, httputil.HttpError{
 			Error: err.Error(),
 		})
@@ -77,6 +81,12 @@ func ReadShortUrl(c *gin.Context) {
 	alias := c.Param("alias")
 	shortUrl, err := models.ReadShortUrl(username, alias)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, httputil.HttpError{
+				Error: err.Error(),
+			})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, httputil.HttpError{
 			Error: err.Error(),
 		})
@@ -105,6 +115,12 @@ func UpdateShortUrl(c *gin.Context) {
 	}
 	err = models.UpdateShortUrl(username, alias, updateShortUrl.Url)
 	if err != nil {
+		if errors.Is(err, util.ErrRecordNotUpdated) {
+			c.JSON(http.StatusNotFound, httputil.HttpError{
+				Error: err.Error(),
+			})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, httputil.HttpError{
 			Error: err.Error(),
 		})
@@ -125,6 +141,12 @@ func DeleteShortUrl(c *gin.Context) {
 	alias := c.Param("alias")
 	err := models.DeleteShortUrl(username, alias)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, httputil.HttpError{
+				Error: err.Error(),
+			})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, httputil.HttpError{
 			Error: err.Error(),
 		})

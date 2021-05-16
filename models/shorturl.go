@@ -1,5 +1,7 @@
 package models
 
+import "github.com/lirc572/nanourl/util"
+
 type ShortUrl struct {
 	Alias       string `gorm:"primary_key" json:"alias"`
 	Url         string `json:"url"`
@@ -38,9 +40,12 @@ func ReadShortUrl(username, alias string) (ShortUrl, error) {
 }
 
 func UpdateShortUrl(username, alias, url string) error {
-	err := db.Model(&ShortUrl{}).Where("alias = ? AND user_referer = ?", alias, username).Update("url", url).Error
-	if err != nil {
-		return err
+	result := db.Model(&ShortUrl{}).Where("alias = ? AND user_referer = ?", alias, username).Update("url", url)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected < 1 {
+		return util.ErrRecordNotUpdated
 	}
 	return nil
 }
