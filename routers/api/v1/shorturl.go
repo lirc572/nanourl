@@ -14,7 +14,7 @@ import (
 )
 
 type createShortUrlReq struct {
-	Alias string `form:"alias" json:"alias" xml:"alias" binding:"required,min=3,max=20"`
+	Alias string `form:"alias" json:"alias" xml:"alias" binding:"required,alphanum,min=3,max=20"`
 	Url   string `form:"url" json:"url" xml:"url" binding:"required,url"`
 }
 

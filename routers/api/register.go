@@ -16,8 +16,8 @@ const (
 )
 
 type registerReq struct {
-	Username string `form:"username" json:"username" xml:"username" binding:"required,min=6,max=16"`
-	Password string `form:"password" json:"password" xml:"password" binding:"required,min=8,max=18"`
+	Username string `form:"username" json:"username" xml:"username" binding:"required,alphanum,min=6,max=16"`
+	Password string `form:"password" json:"password" xml:"password" binding:"required,alphanum,min=8,max=18"`
 }
 
 func registerAccount(register registerReq) int {
