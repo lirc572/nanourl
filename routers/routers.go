@@ -45,7 +45,7 @@ func InitRouters() *gin.Engine {
 	r.POST("/register", api.RegisterRouter)
 	r.POST("/login", api.LoginRouter)
 
-	r.GET("/go/:alias", api.RedirectByAlias)
+	r.GET("/:alias", api.RedirectByAlias)
 
 	apiv1 := r.Group("api/v1")
 	apiv1.Use(jwt.JwtVerify())
