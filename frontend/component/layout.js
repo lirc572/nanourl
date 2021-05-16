@@ -142,7 +142,7 @@ export default function Layout({ children }) {
           >
             <Button>
               <FireOutlined />
-              {accessToken ? `Welcome, ${username}!` : ""}
+              {accessToken ? `Welcome, ${username}!` : null}
             </Button>
           </Dropdown>,
         ]}

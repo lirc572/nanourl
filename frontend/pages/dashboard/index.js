@@ -167,14 +167,14 @@ export default function DashboardPage() {
                         />
                       </Tooltip>
                     </Col>
-                    <Col span={4}>
+                    <Col span={6}>
                       <Tooltip title="go to url">
                         <a href={`${baseUrl}/${item.alias}`} target="_blank">
-                          {item.alias}
+                          {`${baseUrl}/${item.alias}`}
                         </a>
                       </Tooltip>
                     </Col>
-                    <Col span={14}>{item.url}</Col>
+                    <Col span={12}>{item.url}</Col>
                     <Col span={4}>
                       <Space size="middle">
                         <Button
@@ -216,7 +216,7 @@ export default function DashboardPage() {
           </Button>,
         ]}
       >
-        <Form form={form} name="create_alias" layout="inline">
+        <Form form={form} name="create_alias" layout="vertical">
           <Form.Item
             name="alias"
             rules={[
@@ -229,7 +229,12 @@ export default function DashboardPage() {
               },
             ]}
           >
-            <Input placeholder="Alias" onKeyPress={onModelInputKeyPress} />
+            <Input
+              addonBefore={`${baseUrl}/`}
+              placeholder="alias"
+              allowClear
+              onKeyPress={onModelInputKeyPress}
+            />
           </Form.Item>
           <Form.Item
             name="url"
@@ -241,7 +246,11 @@ export default function DashboardPage() {
               },
             ]}
           >
-            <Input placeholder="URL" onKeyPress={onModelInputKeyPress} />
+            <Input
+              placeholder="url"
+              allowClear
+              onKeyPress={onModelInputKeyPress}
+            />
           </Form.Item>
         </Form>
       </Modal>
@@ -259,9 +268,25 @@ export default function DashboardPage() {
           </Button>,
         ]}
       >
-        <Form form={editForm} name="edit_alias" layout="inline">
-          <Form.Item name="alias">
-            <Input placeholder="Alias" disabled />
+        <Form form={editForm} name="edit_alias" layout="vertical">
+          <Form.Item
+            name="alias"
+            rules={[
+              {
+                required: true,
+                min: 3,
+                max: 20,
+                message:
+                  "Please provide an alias of a length between 3 and 20!",
+              },
+            ]}
+          >
+            <Input
+              addonBefore={`${baseUrl}/`}
+              placeholder="alias"
+              allowClear
+              disabled
+            />
           </Form.Item>
           <Form.Item
             name="url"
@@ -273,7 +298,11 @@ export default function DashboardPage() {
               },
             ]}
           >
-            <Input placeholder="URL" onKeyPress={onEditModelInputKeyPress} />
+            <Input
+              placeholder="url"
+              allowClear
+              onKeyPress={onEditModelInputKeyPress}
+            />
           </Form.Item>
         </Form>
       </Modal>
