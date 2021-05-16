@@ -19,7 +19,7 @@ const initialState = {
       : null,
   accessToken:
     typeof window !== "undefined"
-      ? localStorage.getItem("nanourlAccessToekn")
+      ? localStorage.getItem("nanourlAccessToken")
       : null,
   baseUrl: "https://nanourl.ml",
 };
