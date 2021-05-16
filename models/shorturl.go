@@ -1,14 +1,14 @@
 package models
 
 type ShortUrl struct {
-	Alias     string `gorm:"primary_key" json:"alias"`
-	Url       string `json:"url"`
-	CreatedBy string `json:"createdby"`
+	Alias       string `gorm:"primary_key" json:"alias"`
+	Url         string `json:"url"`
+	UserReferer string `json:"createdby"`
 }
 
 func ReadShortUrlsOfUser(username string) ([]*ShortUrl, error) {
 	var shortUrls []*ShortUrl
-	err := db.Where("created_by = ?", username).Find(&shortUrls).Error
+	err := db.Where("user_referer = ?", username).Find(&shortUrls).Error
 	if err != nil {
 		return nil, err
 	}
@@ -17,9 +17,9 @@ func ReadShortUrlsOfUser(username string) ([]*ShortUrl, error) {
 
 func CreateShortUrl(username, url, alias string) error {
 	shortUrl := ShortUrl{
-		Alias:     alias,
-		Url:       url,
-		CreatedBy: username,
+		Alias:       alias,
+		Url:         url,
+		UserReferer: username,
 	}
 	result := db.Create(&shortUrl)
 	if result.Error != nil {
@@ -30,7 +30,7 @@ func CreateShortUrl(username, url, alias string) error {
 
 func ReadShortUrl(username, alias string) (ShortUrl, error) {
 	var shortUrl ShortUrl
-	err := db.Where("alias = ? AND created_by = ?", alias, username).First(&shortUrl).Error
+	err := db.Where("alias = ? AND user_referer = ?", alias, username).First(&shortUrl).Error
 	if err != nil {
 		return shortUrl, err
 	}
@@ -38,7 +38,7 @@ func ReadShortUrl(username, alias string) (ShortUrl, error) {
 }
 
 func UpdateShortUrl(username, alias, url string) error {
-	err := db.Model(&ShortUrl{}).Where("alias = ? AND created_by = ?", alias, username).Update("url", url).Error
+	err := db.Model(&ShortUrl{}).Where("alias = ? AND user_referer = ?", alias, username).Update("url", url).Error
 	if err != nil {
 		return err
 	}
@@ -47,7 +47,7 @@ func UpdateShortUrl(username, alias, url string) error {
 
 func DeleteShortUrl(username, alias string) error {
 	var shortUrl ShortUrl
-	err := db.Where("alias = ? AND created_by = ?", alias, username).First(&shortUrl).Error
+	err := db.Where("alias = ? AND user_referer = ?", alias, username).First(&shortUrl).Error
 	if err != nil {
 		return err
 	}

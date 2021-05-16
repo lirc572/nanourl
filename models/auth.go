@@ -5,8 +5,9 @@ import (
 )
 
 type Auth struct {
-	Username string `gorm:"primary_key" json:"username"`
-	Password string `json:"password"`
+	Username  string     `gorm:"primary_key" json:"username"`
+	Password  string     `json:"password"`
+	ShortUrls []ShortUrl `gorm:"foreignKey:UserReferer"`
 }
 
 func CheckAuth(username, password string) (bool, error) {
