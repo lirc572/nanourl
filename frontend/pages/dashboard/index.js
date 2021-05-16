@@ -162,14 +162,14 @@ export default function DashboardPage() {
                           shape="circle"
                           icon={<CopyOutlined />}
                           onClick={() =>
-                            copyToClipboard(`${baseUrl}/go/${item.alias}`)
+                            copyToClipboard(`${baseUrl}/${item.alias}`)
                           }
                         />
                       </Tooltip>
                     </Col>
                     <Col span={4}>
                       <Tooltip title="go to url">
-                        <a href={`${baseUrl}/go/${item.alias}`} target="_blank">
+                        <a href={`${baseUrl}/${item.alias}`} target="_blank">
                           {item.alias}
                         </a>
                       </Tooltip>
