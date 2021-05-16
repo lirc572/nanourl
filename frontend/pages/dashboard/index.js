@@ -80,6 +80,15 @@ export default function DashboardPage() {
     };
   };
 
+  const onModelInputKeyPress = (target) => {
+    if (target.charCode===13) {
+      const { alias, url } = form.getFieldsValue();
+      if (alias.length > 2 && url.length > 4) {
+        onCreate();
+      }
+    }
+  };
+
   useEffect(async () => {
     const data = await readShortUrls();
     if (data) {
@@ -165,22 +174,25 @@ export default function DashboardPage() {
             rules={[
               {
                 required: true,
-                message: "Please provide an alias!",
+                min: 3,
+                max: 20,
+                message: "Please provide an alias of a length between 3 and 20!",
               },
             ]}
           >
-            <Input placeholder="Alias" />
+            <Input placeholder="Alias" onKeyPress={onModelInputKeyPress} />
           </Form.Item>
           <Form.Item
             name="url"
             rules={[
               {
                 required: true,
-                message: "Please provide a URL!",
+                min:5,
+                message: "Please provide a URL of a length of at least 5!",
               },
             ]}
           >
-            <Input placeholder="URL" />
+            <Input placeholder="URL" onKeyPress={onModelInputKeyPress} />
           </Form.Item>
         </Form>
       </Modal>

@@ -1,12 +1,14 @@
 import { initializeStore } from "../store";
 import { message } from "antd";
 import axios from "axios";
-import Router from 'next/router';
+import Router from "next/router";
 
 let instance;
+let _baseUrl;
 
 function initInstance() {
   const { baseUrl, accessToken } = initializeStore().getState();
+  _baseUrl = baseUrl;
   return axios.create({
     baseURL: baseUrl,
     timeout: 10000,
@@ -46,10 +48,15 @@ function getAxiosInstance() {
       return response;
     },
     function (error) {
-      if (error.response.status === 401) {
-        message.error("Authentication failed. Please login again!", 5);
-        initializeStore().dispatch({ type: "LOG_OUT" });
-        Router.push("/");
+      if (
+        error.request.responseURL != `${_baseUrl}/login` &&
+        error.request.responseURL != `${_baseUrl}/register`
+      ) {
+        if (error.response.status === 401) {
+          message.error("Authentication failed. Please login again!", 5);
+          initializeStore().dispatch({ type: "LOG_OUT" });
+          Router.push("/");
+        }
       }
       return Promise.reject(error);
     }

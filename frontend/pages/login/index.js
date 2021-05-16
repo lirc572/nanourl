@@ -62,9 +62,12 @@ export default function LoginPage() {
             accessToken: token,
           },
         });
-        message.success('Logged in successfully!', 5);
+        message.success("Logged in successfully!", 5);
         router.push("/dashboard");
       } else {
+        if (res.status === 401) {
+          message.error("Login failed. Please verify your credentials!", 5);
+        }
         console.log(res);
       }
     });
@@ -90,7 +93,9 @@ export default function LoginPage() {
         rules={[
           {
             required: true,
-            message: "Please input your username!",
+            min: 6,
+            max: 16,
+            message: "Please provide a username of a lenght between 6 and 16!",
           },
         ]}
       >
@@ -103,7 +108,9 @@ export default function LoginPage() {
         rules={[
           {
             required: true,
-            message: "Please input your password!",
+            min: 8,
+            max: 18,
+            message: "Please provide a password of a lenght between 8 and 18!",
           },
         ]}
       >

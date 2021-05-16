@@ -42,9 +42,13 @@ export default function RegisterPage() {
             password,
           },
         });
-        message.success('Logged in successfully!', 5);
+        message.success("Registered successfully!", 5);
         router.push("/login");
       } else {
+        message.error(
+          "Register failed. Please try a different combination!",
+          5
+        );
         console.log(res);
       }
     });
@@ -65,7 +69,9 @@ export default function RegisterPage() {
         rules={[
           {
             required: true,
-            message: "Please input your username!",
+            min: 6,
+            max: 16,
+            message: "Please provide a username of a lenght between 6 and 16!",
           },
         ]}
       >
@@ -78,7 +84,9 @@ export default function RegisterPage() {
         rules={[
           {
             required: true,
-            message: "Please input your password!",
+            min: 8,
+            max: 18,
+            message: "Please provide a password of a lenght between 8 and 18!",
           },
         ]}
       >
